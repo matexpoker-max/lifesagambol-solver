@@ -70,7 +70,7 @@
 
     <p class="mb-3">
       The solver engine here is
-      <a href="https://github.com/b-inary/wasm-postflop" class="link font-semibold" target="_blank" rel="noopener">wasm-postflop</a>
+      <a href="https://github.com/matexpoker-max/lifesagambol-solver" class="link font-semibold" target="_blank" rel="noopener">wasm-postflop</a>
       by Wataru Inariba, released under the
       <a href="https://www.gnu.org/licenses/agpl-3.0.html" class="link" target="_blank" rel="noopener">AGPL-3.0 license</a>.
       We modified the wrapping — branding, copy, navigation — but the math is
@@ -81,7 +81,7 @@
       Per the AGPL, the complete source for our modified version is publicly
       available:
       <a
-        href="https://github.com/b-inary/wasm-postflop"
+        href="https://github.com/matexpoker-max/lifesagambol-solver"
         class="link font-semibold"
         target="_blank"
         rel="noopener"
