@@ -17,7 +17,7 @@
 
       <div class="flex ml-auto h-full items-center z-10">
         <a
-          href="https://github.com/b-inary/wasm-postflop"
+          href="https://github.com/matexpoker-max/lifesagambol-solver"
           class="flex px-4 h-full items-center text-sm font-medium hover:bg-slate-700"
           target="_blank"
           rel="noopener"
