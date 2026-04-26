@@ -8,6 +8,7 @@ const { VueLoaderPlugin } = require("vue-loader");
 /** @type {import("webpack").Configuration} */
 module.exports = {
   mode: "production",
+  cache: false,
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
