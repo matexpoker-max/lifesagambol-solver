@@ -1,9 +1,6 @@
 import * as Comlink from "comlink";
-import { detect } from "detect-browser";
 
-type ModST = typeof import("../pkg/solver-st/solver.js");
-type ModMT = typeof import("../pkg/solver-mt/solver.js");
-type Mod = ModST | ModMT;
+type Mod = typeof import("../pkg/solver-st/solver.js");
 
 const createHandler = (mod: Mod) => {
   return {
@@ -127,31 +124,17 @@ const createHandler = (mod: Mod) => {
   };
 };
 
-const isMTSupported = () => {
-  const browser = detect();
-  return !(browser && (browser.name === "safari" || browser.os === "iOS"));
-};
-
 let mod: Mod | null = null;
 export type Handler = ReturnType<typeof createHandler>;
 
-const initHandler = async (num_threads: number) => {
-  if (isMTSupported()) {
-    mod = await import("../pkg/solver-mt/solver.js");
-    await mod.default();
-    await (mod as ModMT).initThreadPool(num_threads);
-  } else {
-    mod = await import("../pkg/solver-st/solver.js");
-    await mod.default();
-  }
-
+const initHandler = async (_num_threads: number) => {
+  mod = await import("../pkg/solver-st/solver.js");
+  await mod.default();
   return Comlink.proxy(createHandler(mod));
 };
 
 const beforeTerminate = async () => {
-  if (isMTSupported()) {
-    await (mod as ModMT).exitThreadPool();
-  }
+  // No-op for single-threaded build
 };
 
 export interface WorkerApi {
