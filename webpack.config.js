@@ -36,6 +36,12 @@ module.exports = {
         test: /\.png$/,
         loader: "url-loader",
       },
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
     ],
   },
   resolve: { extensions: [".js", ".ts", ".vue"] },
