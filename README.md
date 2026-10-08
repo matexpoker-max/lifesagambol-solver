@@ -70,6 +70,3 @@ Or just run `bash build.sh` — same thing the Cloudflare build does.
 - Solver engine library: https://github.com/b-inary/postflop-solver
 - Original author's note about suspending development: https://github.com/b-inary/postflop-solver/issues/46
 
-## Donations
-
-10% of every dollar that comes in via lifesagambol.com goes to S.O.G. The solver is free. The give-back is the point.

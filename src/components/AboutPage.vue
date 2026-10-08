@@ -18,18 +18,6 @@
       point.
     </p>
 
-    <!-- The give-back -->
-    <div
-      class="flex pl-3 pr-4 py-2.5 mb-6 text-emerald-800 bg-emerald-50 border-2 border-emerald-600 rounded-md"
-    >
-      <InformationCircleIcon class="inline w-5 h-5 mt-[0.1875rem] mr-2 flex-shrink-0" />
-      <div>
-        <span class="font-bold">10% of every dollar that comes through Lifes a Gambol goes to S.O.G.</span>
-        That's the whole shape of the place. The solver, the writing, the
-        tools — they all point the same direction. Play, give some back, sit down again.
-      </div>
-    </div>
-
     <!-- What this thing is -->
     <h3 class="text-lg font-bold mt-6 mb-2">What you're looking at</h3>
 
