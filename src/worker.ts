@@ -1,6 +1,9 @@
 import * as Comlink from "comlink";
+import { detect } from "detect-browser";
 
-type Mod = typeof import("../pkg/solver-st/solver.js");
+type ModST = typeof import("../pkg/solver-st/solver.js");
+type ModMT = typeof import("../pkg/solver-mt/solver.js");
+type Mod = ModST | ModMT;
 
 const createHandler = (mod: Mod) => {
   return {
@@ -125,21 +128,75 @@ const createHandler = (mod: Mod) => {
 };
 
 let mod: Mod | null = null;
+let threadsInUse = 1;
+let usingThreads = false;
 export type Handler = ReturnType<typeof createHandler>;
 
-const initHandler = async (_num_threads: number) => {
-  mod = await import("../pkg/solver-st/solver.js");
-  await mod.default();
-  return Comlink.proxy(createHandler(mod));
+// Several threads need SharedArrayBuffer, which the browser only allows on a
+// cross-origin isolated page. Safari and iOS stay on one thread.
+const canUseThreads = (numThreads: number) => {
+  if (!(numThreads > 1)) return false;
+  if (typeof SharedArrayBuffer === "undefined") return false;
+  if (!self.crossOriginIsolated) return false;
+  const browser = detect();
+  return !(
+    browser &&
+    (browser.name === "safari" ||
+      browser.name === "ios" ||
+      browser.os === "iOS")
+  );
 };
 
+const withTimeout = <T>(promise: Promise<T>, ms: number) =>
+  new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("timed out")), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
+
+const initHandler = async (numThreads: number) => {
+  usingThreads = false;
+  threadsInUse = 1;
+  if (canUseThreads(numThreads)) {
+    try {
+      const modMT = await import("../pkg/solver-mt/solver.js");
+      await modMT.default();
+      await withTimeout(modMT.initThreadPool(numThreads), 20000);
+      mod = modMT;
+      usingThreads = true;
+      threadsInUse = numThreads;
+    } catch (error) {
+      console.warn("Running the solver on one thread:", error);
+    }
+  }
+  if (!usingThreads) {
+    const modST = await import("../pkg/solver-st/solver.js");
+    await modST.default();
+    mod = modST;
+  }
+  return Comlink.proxy(createHandler(mod as Mod));
+};
+
+const threadCount = () => threadsInUse;
+
 const beforeTerminate = async () => {
-  // No-op for single-threaded build
+  if (usingThreads && mod) {
+    await (mod as ModMT).exitThreadPool();
+  }
 };
 
 export interface WorkerApi {
   initHandler: typeof initHandler;
+  threadCount: typeof threadCount;
   beforeTerminate: typeof beforeTerminate;
 }
 
-Comlink.expose({ initHandler, beforeTerminate });
+Comlink.expose({ initHandler, threadCount, beforeTerminate });

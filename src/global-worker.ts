@@ -4,6 +4,7 @@ import { WorkerApi, Handler } from "./worker";
 let worker: Worker | null = null;
 let proxy: Comlink.Remote<WorkerApi> | null = null;
 export let handler: Comlink.Remote<Handler> | null = null;
+export let threadsUsed = 1;
 
 export const init = async (numThreads: number) => {
   if (worker && proxy) {
@@ -18,4 +19,5 @@ export const init = async (numThreads: number) => {
 
   proxy = Comlink.wrap<WorkerApi>(worker);
   handler = await proxy.initHandler(numThreads);
+  threadsUsed = await proxy.threadCount();
 };
