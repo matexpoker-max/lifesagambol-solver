@@ -1,24 +1,58 @@
-name: CI
-on: push
+name: Build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - name: Prepare Rust environment
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Rust toolchain
+        run: rustup toolchain install nightly-2023-10-01 --profile minimal --component rust-src --target wasm32-unknown-unknown
+
+      - name: wasm-pack
         run: |
-          rustup install nightly
-          rustup +nightly component add rust-src
-          rustup target add wasm32-unknown-unknown
-          cargo install wasm-pack
-      - name: Install dependencies
+          curl -sSfL https://github.com/rustwasm/wasm-pack/releases/download/v0.12.1/wasm-pack-v0.12.1-x86_64-unknown-linux-musl.tar.gz | tar xz
+          sudo install wasm-pack-v0.12.1-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
+          rm -rf wasm-pack-v0.12.1-x86_64-unknown-linux-musl
+          wasm-pack --version
+
+      - name: Install packages
         run: npm ci
-      - name: Build
+
+      - name: Build WebAssembly
+        run: npm run wasm
+
+      - name: Point the thread helpers at the solver module
         run: |
-          npm run wasm
-          npm run build
-      - name: Lint
+          for f in pkg/solver-mt/snippets/*/workerHelpers.js; do
+            sed -i 's|import("\.\./\.\.")|import("../../solver.js")|' "$f"
+            grep -q 'import("../../solver.js")' "$f"
+          done
+
+      - name: Build the page
+        run: npm run build
+
+      - name: Publish to the dist branch
         run: |
-          npm run lint
-          npx prettier --check src/**/*.{ts,vue}
+          cd dist
+          git init -q
+          git checkout -q -b dist
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Build of ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:dist
