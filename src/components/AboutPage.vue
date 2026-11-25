@@ -30,7 +30,7 @@
     <p class="mb-3">
       The engine running under the hood is real. The
       <a href="https://github.com/b-inary/wasm-postflop#comparison" class="link" target="_blank" rel="noopener">published comparison</a>
-      shows it produces results essentially identical to PioSOLVER and GTO+.
+      shows it produces results essentially identical to the leading paid solvers.
       It's not a toy. It's the same math, set loose on the open web.
     </p>
 
@@ -58,7 +58,7 @@
 
     <p class="mb-3">
       The solver engine here is
-      <a href="https://github.com/matexpoker-max/lifesagambol-solver" class="link font-semibold" target="_blank" rel="noopener">wasm-postflop</a>
+      <a href="https://github.com/b-inary/wasm-postflop" class="link font-semibold" target="_blank" rel="noopener">wasm-postflop</a>
       by Wataru Inariba, released under the
       <a href="https://www.gnu.org/licenses/agpl-3.0.html" class="link" target="_blank" rel="noopener">AGPL-3.0 license</a>.
       We modified the wrapping — branding, copy, navigation — but the math is

@@ -254,7 +254,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { init, handler } from "../global-worker";
+import { init, handler, threadsUsed } from "../global-worker";
 import {
   useStore,
   useConfigStore,
@@ -522,8 +522,8 @@ export default defineComponent({
         isCompressionEnabled.value = true;
       }
 
-      const threadText = `${numThreads.value} thread${
-        numThreads.value === 1 ? "" : "s"
+      const threadText = `${threadsUsed} thread${
+        threadsUsed === 1 ? "" : "s"
       }`;
 
       isTreeBuilding.value = false;

@@ -531,14 +531,14 @@
                         recommended value is around 15% - 20%.
                       </div>
                       <div class="mt-3">
-                        This option is similar to the "all-in threshold" in
-                        PioSOLVER. PioSOLVER will replace the betting action
+                        This option is similar to the "all-in threshold" used by
+                        other popular solvers, which replace the betting action
                         with an all-in if the percentage of one's pot commitment
                         to the initial stack exceeds the threshold.
                       </div>
                       <div class="mt-3">
                         The conversion formula, when ignoring decimal rounding,
-                        is as follows (s = initial SPR, r = PioSOLVER's
+                        is as follows (s = initial SPR, r = that all-in
                         threshold):
                       </div>
                       <div class="mt-1 text-center">
@@ -580,7 +580,7 @@
                         similar size.
                       </div>
                       <div class="mt-3">
-                        The algorithm is the same as in PioSOLVER. That is,
+                        This is the standard method other popular solvers use:
                         select the largest bet size (= X% of the pot) and remove
                         all other betting actions with sizes (= Y% of the pot)
                         that satisfy the following inequality:
